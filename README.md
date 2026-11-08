@@ -73,10 +73,24 @@ forge install --upgrade -e production --site <your-site> --product Confluence --
 
 Then, on any Confluence page, type `/Approval drift` and insert the macro.
 
-## Install
+## Install (for reviewers)
 
-Installation link: see the distribution page of the app in the Atlassian developer console.
-Requires a Confluence Cloud site where you can install apps.
+1. Open the installation link for this app and sign in to Atlassian.
+   The link is on the app's Devpost listing; it is a signed Atlassian install URL that redirects
+   through `id.atlassian.com` and then lands on the install page for this app.
+2. Choose the Confluence site to install onto. Any site where you are an admin will accept it —
+   the app is distributed as *Sharing with anyone*, so no vendor account is needed.
+3. Open any Confluence page, press **Edit**, type `/Approval drift` and insert the **Approval drift**
+   macro, then **Publish**.
+
+What you should see: a panel holding the six request fields. Press **Approve these exact values** —
+it turns green ("Approval still matches") and a message reads *Approved and saved*. Change the
+amount, and the panel turns red immediately: *Stale: amount increase since approval*, with
+`Amount: 1600 → 1850 (critical)`. Reload the page: both the values and the approval survive, because
+they are stored as a content property on that page.
+
+Requires a Confluence Cloud site where you can install apps. If the link has expired, it can be
+regenerated from the app's distribution page in the Atlassian developer console.
 
 ## Privacy
 
