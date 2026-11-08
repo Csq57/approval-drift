@@ -1,0 +1,20 @@
+﻿const { chromium } = require('playwright');
+const URL_DETAILS = 'https://devpost.com/submit-to/31572-codegeist-2026-build-with-context-ship-with-confidence/manage/submissions/1288726-approval-drift/project_details/edit';
+(async () => {
+  const browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
+  const context = browser.contexts()[0];
+  const page = context.pages()[0] || (await context.newPage());
+  await page.setViewportSize({ width: 1400, height: 1800 });
+  await page.goto(URL_DETAILS, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  await page.waitForTimeout(4500);
+  console.log('desc:', (await page.locator('#software_description').inputValue()).length);
+  console.log('video:', await page.locator('#software_video_url').inputValue());
+  const save = page.getByRole('button', { name: /Save\s*&\s*continue/i }).first();
+  await save.scrollIntoViewIfNeeded();
+  await save.click({ force: true });
+  await page.waitForTimeout(8000);
+  console.log('after save URL:', page.url());
+  const err = await page.$$eval('.error, .field_with_errors, .error-message', els => els.map(e => e.textContent.replace(/\s+/g,' ').trim()).slice(0,5));
+  console.log('ERRORS:', JSON.stringify(err));
+  await browser.close();
+})().catch(e => { console.error('ERR', e.message); process.exit(1); });

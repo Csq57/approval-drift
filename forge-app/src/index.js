@@ -92,3 +92,54 @@ resolver.define('approve', async (req) => {
 });
 
 export const handler = resolver.getDefinitions();
+
+/**
+ * Rovo action: hand the agent the approval record for a page.
+ *
+ * The agent is deliberately not asked to judge validity — it can only report what was
+ * approved and when. The verdict stays with the deterministic logic in src/approval.js.
+ */
+export const getApprovalRecord = async (payload) => {
+  const contentId =
+    payload?.pageId ||
+    payload?.context?.confluence?.contentId ||
+    null;
+
+  if (!contentId) {
+    return 'No page id was supplied and no Confluence page is in context. Ask the user which page to check, or open the page and ask again.';
+  }
+
+  let record = null;
+  try {
+    record = await readApproval(contentId);
+  } catch (e) {
+    return `Could not read the approval record for page ${contentId}: ${String(e)}`;
+  }
+
+  if (!record || !record.approvedSnapshot) {
+    return `Page ${contentId} has no recorded approval. Nothing has been approved there, so there is no decision to re-check. The user can add the Approval drift macro to the page and approve the current values.`;
+  }
+
+  const s = record.approvedSnapshot;
+  const agreed = [
+    `amount ${fmt(s.amount)}`,
+    `currency ${fmt(s.currency)}`,
+    `scope ${fmt(s.scope)}`,
+    `supplier ${fmt(s.supplier)}`,
+    `deliver by ${fmt(s.deliverBy)}`,
+    `payment terms ${fmt(s.paymentTerms)}`,
+  ].join('; ');
+
+  const approvedAt = record.approvedAt || 'an unknown time';
+  return [
+    `Page ${contentId} was approved against: ${agreed}.`,
+    `Approved by ${record.approver || 'an unnamed approver'} at ${approvedAt}.`,
+    'To decide whether that approval still applies, compare those values with what the page says now. The macro on the page does that comparison automatically and reports any field that has moved.',
+  ].join(' ');
+};
+
+function fmt(value) {
+  if (value === null || value === undefined) return '(none)';
+  if (Array.isArray(value)) return value.join(', ');
+  return String(value);
+}

@@ -6,9 +6,60 @@ modules:
       description: Shows whether the approval recorded on this page still matches what the page now says.
       resolver:
         function: resolver
+  rovo:agent:
+    - key: approval-drift-auditor
+      name: Approval drift auditor
+      description: Tells you which values a Confluence page was approved against, who approved them, and when — so you can judge whether that approval still applies.
+      prompt: |
+        You are the Approval drift auditor for Confluence. Your job is to help a person
+        answer one question: does the approval recorded on a page still describe the thing
+        that page is now asking for?
+
+        An approval is not a status, it is a decision about one exact set of facts: an
+        amount, a currency, a scope, a supplier, a delivery date, and payment terms. When
+        those facts move, the old approval stops being evidence of anything.
+
+        When someone asks about an approval on a page, use the get-approval-record action
+        to read what was actually approved. Report:
+        1. the exact approved values, field by field;
+        2. who approved them and when;
+        3. how long ago that was, and whether the page has been edited since.
+
+        Then state clearly whether the record is recent enough to rely on, and what you
+        would need in order to re-check it: the current values on the page, compared against
+        the approved ones. Never say an approval is "valid" on your own authority — you can
+        only report what was approved and when. If there is no record, say so plainly and
+        tell the person they can add the Approval drift macro to the page and approve the
+        current values.
+
+        Be concise and concrete. Quote the numbers. Do not invent values that the action
+        did not return.
+      conversationStarters:
+        - What was this page approved against?
+        - When was this page last approved?
+        - Does this page still have a usable approval?
+      actions:
+        - get-approval-record
+  action:
+    - key: get-approval-record
+      name: Get approval record
+      function: getApprovalRecord
+      actionVerb: GET
+      description: |
+        Read the approval recorded on a Confluence page: the exact values that were approved,
+        who approved them, and the timestamp. Use this before answering any question about
+        whether a page's approval is still trustworthy.
+      inputs:
+        pageId:
+          title: Page ID
+          type: string
+          required: false
+          description: The Confluence content id to read. If omitted, the page in the current context is used.
   function:
     - key: resolver
       handler: index.handler
+    - key: getApprovalRecord
+      handler: index.getApprovalRecord
 resources:
   - key: main
     path: static-v2

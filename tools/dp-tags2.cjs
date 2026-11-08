@@ -1,0 +1,20 @@
+﻿const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
+  const context = browser.contexts()[0];
+  const page = context.pages()[0] || (await context.newPage());
+  await page.setViewportSize({ width: 1400, height: 1700 });
+  await page.waitForTimeout(500);
+  const tag = page.locator('#software_tag_list');
+  await tag.click({ force: true });
+  await tag.type('Node.js', { delay: 60 });
+  await page.waitForTimeout(1200);
+  const dd = await page.$$eval('.select2-results li', els => els.map(e => e.textContent.trim()).slice(0, 8));
+  console.log('DROPDOWN:', JSON.stringify(dd));
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(800);
+  console.log('TAGVALUE:', JSON.stringify(await tag.inputValue()));
+  const chips = await page.$$eval('.tag', els => els.map(e => e.textContent.trim()));
+  console.log('CHIPS:', JSON.stringify(chips));
+  await browser.close();
+})().catch(e => { console.error('ERR', e.message); process.exit(1); });

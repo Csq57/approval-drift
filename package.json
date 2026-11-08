@@ -6,5 +6,8 @@
   "description": "Detects when an already-granted approval has silently stopped matching the thing it approved.",
   "scripts": {
     "test": "node --test src"
+  },
+  "dependencies": {
+    "playwright": "^1.65.0"
   }
 }
