@@ -43,6 +43,7 @@ function renderForm() {
     input.addEventListener('input', (e) => {
       state.request[field.key] = e.target.value;
       recompute();
+      scheduleRequestSave();
     });
     wrap.append(label, input);
     el.form.appendChild(wrap);
@@ -86,14 +87,28 @@ function recompute() {
 async function loadApproval() {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const out = await invoke('getState');
-    if (out && out.approval) {
-      state.approval = out.approval;
+    if (out && (out.approval || out.currentRequest)) {
+      state.approval = out.approval || null;
+      if (out.currentRequest) {
+        state.request = { ...state.request, ...out.currentRequest };
+        renderForm();
+      }
       recompute();
       return;
     }
     if (attempt < 2) await new Promise((r) => setTimeout(r, 500));
   }
   recompute();
+}
+
+// Typing must not cost a round trip per keystroke, but the page should remember what was typed.
+// One debounced write per pause is enough: the approval is the durable record, this is the draft.
+let saveTimer = null;
+function scheduleRequestSave() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    invoke('saveRequest', { request: state.request }).catch(() => {});
+  }, 900);
 }
 
 async function approve() {

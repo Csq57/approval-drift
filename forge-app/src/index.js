@@ -65,10 +65,31 @@ resolver.define('getState', async (req) => {
   const contentId = contentIdOf(req);
   if (!contentId) return { approval: null, error: 'no content context' };
   try {
-    return { approval: await readApproval(contentId), contentId };
+    const record = await readApproval(contentId);
+    return {
+      approval: record,
+      // The request itself is part of the page, not just the approval. Without this the macro
+      // would fall back to its built-in demo values on every reload and immediately look stale
+      // against an approval for different numbers — which reads as a bug, not as drift.
+      currentRequest: record?.currentRequest ?? null,
+      contentId,
+    };
   } catch (e) {
     return { approval: null, error: String(e), contentId };
   }
+});
+
+resolver.define('saveRequest', async (req) => {
+  const contentId = contentIdOf(req);
+  const request = req?.payload?.request ?? {};
+  if (!contentId) return { ok: false, error: 'no content context' };
+  const existing = await readApproval(contentId).catch(() => null);
+  const record = {
+    ...(existing || {}),
+    currentRequest: request,
+  };
+  const write = await writeApproval(contentId, record);
+  return { ok: write.ok, status: write.status };
 });
 
 resolver.define('approve', async (req) => {
@@ -79,6 +100,7 @@ resolver.define('approve', async (req) => {
     approvedSnapshot: snapshot(request),
     approver: 'page editor',
     approvedAt: new Date().toISOString(),
+    currentRequest: request,
   };
   const write = await writeApproval(contentId, record);
   return {

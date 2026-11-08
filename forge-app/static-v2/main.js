@@ -6168,6 +6168,7 @@ Please see https://iframe-resizer.com/upgrade for more details.
       input.addEventListener("input", (e) => {
         state.request[field.key] = e.target.value;
         recompute();
+        scheduleRequestSave();
       });
       wrap.append(label, input);
       el.form.appendChild(wrap);
@@ -6200,14 +6201,26 @@ Please see https://iframe-resizer.com/upgrade for more details.
   async function loadApproval() {
     for (let attempt = 0; attempt < 3; attempt += 1) {
       const out = await (0, import_bridge.invoke)("getState");
-      if (out && out.approval) {
-        state.approval = out.approval;
+      if (out && (out.approval || out.currentRequest)) {
+        state.approval = out.approval || null;
+        if (out.currentRequest) {
+          state.request = { ...state.request, ...out.currentRequest };
+          renderForm();
+        }
         recompute();
         return;
       }
       if (attempt < 2) await new Promise((r) => setTimeout(r, 500));
     }
     recompute();
+  }
+  var saveTimer = null;
+  function scheduleRequestSave() {
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      (0, import_bridge.invoke)("saveRequest", { request: state.request }).catch(() => {
+      });
+    }, 900);
   }
   async function approve() {
     state.busy = true;
