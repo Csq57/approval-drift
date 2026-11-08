@@ -6216,6 +6216,7 @@ Please see https://iframe-resizer.com/upgrade for more details.
   }
   var saveTimer = null;
   function scheduleRequestSave() {
+    if (!state.hydrated) return;
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
       (0, import_bridge.invoke)("saveRequest", { request: state.request }).catch(() => {
@@ -6241,7 +6242,11 @@ Please see https://iframe-resizer.com/upgrade for more details.
   el.approve.addEventListener("click", approve);
   renderForm();
   el.approve.disabled = false;
-  loadApproval().catch((e) => {
+  state.hydrated = false;
+  loadApproval().then(() => {
+    state.hydrated = true;
+  }).catch((e) => {
+    state.hydrated = true;
     el.status.className = "status stale";
     el.status.innerHTML = `<h2>Could not reach the app backend</h2><p>${String(e)}</p>`;
     el.approve.disabled = false;

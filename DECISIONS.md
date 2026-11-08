@@ -24,3 +24,24 @@
 1. Codegeist 或 PayPal 出结果，且未获奖 —— 说明「完成度」而非「数量」是瓶颈，届时优先复盘而不是换赛道。
 2. 8 周内 5 名试用者中无人复用（< 2 人主动重复使用）—— 按计划停止产品化。
 3. 出现奖金 ≥ $50k、资格明确含澳、且与数据清洗/自动化直接相关的线上比赛 —— 可重新评估是否并行。
+
+---
+
+## 2026-11-08 22:35 · Rovo action 端到端已验证
+
+**做法**：Rovo 面板用 Chrome side-panel 表面渲染，CDP 的 page/frame 都看不到；改用桌面辅助功能树读取，拿到了完整对话。
+
+**证据**（Rovo 里问 "What was this page approved against?" 的实际回答）：列出 `Amount: 1850`、`Currency: AUD`、
+`Scope: design, print`、`Supplier: northline supply co.`、`Deliver by: 2026-12-01`、`Payment terms: net 30`、
+`Approved by: Page editor`、`Approved on: 2026-11-08 at 08:22 UTC`、`Recency: approximately 3 hours ago`，
+并以 "you must compare these values against the current content of the page" 收尾。
+
+**结论**：action 被真实调用；返回的是页面属性真值；agent 遵守 prompt 约束，没有自行判定有效性。
+
+**顺带修掉的竞态**：前端在 `getState` 返回前就允许 `saveRequest`，慢加载时默认值会覆盖页面记忆。
+加 `state.hydrated` 闸门后，实测「加载 1850 → 刷新 1850 → 4 秒后仍 1850」。部署 v6.5.0。
+
+**提交材料**：Devpost 故事改为已验证表述，重新提交后仍 Submitted 5/5。
+
+**又一个踩过的坑**：用 .NET `AppendAllText` 配相对路径时，写到了进程 CWD（paypal 项目），导致 Rovo 记录被追加进
+**PayPal 的公开仓库**，`STATE.md` 也被 `git add -A` 带进去。已清理并加 .gitignore。以后跨项目写文件一律用绝对路径。

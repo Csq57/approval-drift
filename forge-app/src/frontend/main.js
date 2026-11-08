@@ -105,6 +105,7 @@ async function loadApproval() {
 // One debounced write per pause is enough: the approval is the durable record, this is the draft.
 let saveTimer = null;
 function scheduleRequestSave() {
+  if (!state.hydrated) return;
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     invoke('saveRequest', { request: state.request }).catch(() => {});
@@ -134,8 +135,15 @@ el.approve.addEventListener('click', approve);
 renderForm();
 // The button must be usable even if the stored approval cannot be read back.
 el.approve.disabled = false;
-loadApproval().catch((e) => {
-  el.status.className = 'status stale';
-  el.status.innerHTML = `<h2>Could not reach the app backend</h2><p>${String(e)}</p>`;
+// Nothing may write the request back until the stored one has been read. Otherwise the first
+// keystroke - or the default values rendered before the read resolves - overwrites what the page
+// remembered with the built-in demo numbers.
+state.hydrated = false;
+loadApproval()
+  .then(() => { state.hydrated = true; })
+  .catch((e) => {
+    state.hydrated = true;
+    el.status.className = 'status stale';
+    el.status.innerHTML = `<h2>Could not reach the app backend</h2><p>${String(e)}</p>`;
   el.approve.disabled = false;
 });
