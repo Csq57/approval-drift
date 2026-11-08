@@ -8,6 +8,12 @@ because nobody re-reads an approval that already looks finished.
 By the time finance notices, the thing being paid for is not the thing that was approved. That gap is
 the whole product.
 
+## Who it is for
+
+The person who signs off on a purchase, and the person who later pays it. Neither of them needs a new
+surface to live in: the approval sits on the page they were already editing, and Rovo answers
+"What was this approved against?" in the chat they already have open.
+
 ## What it does
 
 A macro on a Confluence page holds the request. Press **Approve these exact values** and the app stores
