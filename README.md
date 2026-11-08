@@ -85,6 +85,15 @@ timestamp) as a content property on the page where the macro is used. It stores 
 sends nothing to any external service, and has no analytics. It is eligible for the
 **Runs on Atlassian** program, which means it runs entirely on Atlassian infrastructure.
 
+Full text: [PRIVACY.md](PRIVACY.md).
+
+## Terms
+
+Provided under the MIT License, as is, without warranty. It records the values you approve and
+flags when those values change; it does not approve, authorise, or block anything by itself.
+
+Full text: [TERMS.md](TERMS.md).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
