@@ -79,4 +79,4 @@ conversation instead of on the page. It has one action, `get-approval-record`, w
 approval stored on a page and returns the exact values that were approved, who approved them and
 when. The agent is explicitly told not to declare an approval valid on its own authority: it can
 report what was approved and when, and the verdict stays with the deterministic logic in the macro.
-Try: *"What was this page approved against?"* or *"Does this page still have a usable approval?"*
+It is registered as a Forge ovo:agent module and appears in Rovo's agent picker as **Approval drift auditor**, scoped to the page in context. Try: *"What was this page approved against?"* or *"Does this page still have a usable approval?"*
