@@ -1,0 +1,19 @@
+{
+  "name": "approval-drift",
+  "version": "1.0.0",
+  "description": "Tells you whether an approval still matches the thing it approved.",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@forge/api": "^8.4.0",
+    "@forge/bridge": "^7.2.1",
+    "@forge/kvs": "^2.1.1",
+    "@forge/react": "^12.4.0",
+    "@forge/resolver": "^2.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

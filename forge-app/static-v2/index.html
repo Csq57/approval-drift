@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Approval drift</title>
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+    <h1>Approval drift</h1>
+    <p class="lede">
+      An approval is a decision about one exact set of facts. This page remembers those facts and
+      tells you the moment the request has moved away from them.
+    </p>
+
+    <div id="status" class="status empty">
+      <h2>Loading…</h2>
+    </div>
+
+    <div class="actions">
+      <button id="approve" disabled>Approve these exact values</button>
+      <span id="msg" class="msg"></span>
+    </div>
+
+    <div id="form" class="fields"></div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>

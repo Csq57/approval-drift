@@ -1,0 +1,8 @@
+﻿node_modules/
+forge-app/node_modules/
+.env
+*.log
+.ForgeStorage/
+SUBMISSION.md
+ORACLE_*.md
+STATE.md

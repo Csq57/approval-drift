@@ -1,0 +1,10 @@
+{
+  "name": "approval-drift",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Detects when an already-granted approval has silently stopped matching the thing it approved.",
+  "scripts": {
+    "test": "node --test src"
+  }
+}

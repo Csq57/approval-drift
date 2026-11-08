@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Approval drift</title>
+    <style>
+      :root { --ink:#172b4d; --muted:#626f86; --line:#dfe1e6; --ok:#216e4e; --bad:#ae2e24; }
+      * { box-sizing: border-box; }
+      html, body { margin:0; padding:0; }
+      body {
+        padding:16px 20px 28px;
+        font:13px/1.45 -apple-system,"Segoe UI",Roboto,sans-serif;
+        color:var(--ink); background:#fff;
+        overflow-y:auto;
+      }
+      h1 { font-size:19px; margin:0 0 4px; }
+      .lede { color:var(--muted); margin:0 0 12px; max-width:68ch; }
+      .status { border:1px solid var(--line); border-left:4px solid var(--ok); border-radius:6px; padding:10px 12px; margin-bottom:14px; }
+      .status.stale { border-left-color:var(--bad); background:#fff7f6; }
+      .status.empty { border-left-color:#8590a2; background:#fafbfc; }
+      .status h2 { font-size:13px; margin:0 0 4px; }
+      .status p { margin:4px 0 0; color:var(--muted); }
+      .status ul { margin:6px 0 0; padding-left:18px; }
+      .fields { display:block; max-width:640px; }
+      .field { margin-bottom:8px; }
+      .field label { display:block; font-size:11px; letter-spacing:.02em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+      .field input { display:block; width:100%; height:30px; padding:4px 8px; border:1px solid var(--line); border-radius:5px; font:inherit; color:var(--ink); }
+      .field input:focus { outline:2px solid #388bff; outline-offset:-1px; }
+      .actions { margin-top:14px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+      button { padding:7px 14px; border-radius:5px; border:1px solid #0055cc; background:#0055cc; color:#fff; font:inherit; cursor:pointer; }
+      button:disabled { opacity:.5; cursor:not-allowed; }
+      .msg { color:var(--muted); font-size:12px; }
+    </style>
+  </head>
+  <body>
+    <h1>Approval drift</h1>
+    <p class="lede">
+      An approval is a decision about one exact set of facts. This page remembers those facts and
+      tells you the moment the request has moved away from them.
+    </p>
+
+    <div id="status" class="status empty">
+      <h2>Loading…</h2>
+    </div>
+
+    <div id="form" class="fields"></div>
+
+    <div class="actions">
+      <button id="approve" disabled>Approve these exact values</button>
+      <span id="msg" class="msg"></span>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>
