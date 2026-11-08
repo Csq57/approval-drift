@@ -13,6 +13,10 @@ re-reads an approval that already looks done.
 
 By the time finance notices, the thing being paid for is not the thing that was approved.
 
+![Approval still matches](docs/screenshot-valid.png)
+
+![Stale: amount increase 1600 to 1850, critical](docs/screenshot-stale.png)
+
 ## What this app does
 
 1. A page carries a request. The macro on the page holds the facts that matter.
