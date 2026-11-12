@@ -60,6 +60,36 @@ def card(path: Path, kicker: str, title: str, lines: list[str], footer: str = ""
     img.save(path, quality=95)
 
 
+def shot(path: Path, src: Path, kicker: str, caption: str, footer: str = "") -> None:
+    """A real screenshot, framed. No abstract title card: the first thing a judge sees is the
+    product doing the thing, because the first five seconds decide whether the rest is read."""
+    img = Image.new("RGB", (W, H), (246, 247, 249))
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, W, 8], fill=ACCENT)
+
+    if kicker:
+        d.text((72, 44), kicker.upper(), font=font(20, True), fill=ACCENT)
+
+    pic = Image.open(src).convert("RGB")
+    # fit inside the frame, leaving room for the caption band and the footer
+    max_w, max_h = W - 144, H - 330
+    scale = min(max_w / pic.width, max_h / pic.height)
+    pic = pic.resize((int(pic.width * scale), int(pic.height * scale)), Image.LANCZOS)
+
+    x = (W - pic.width) // 2
+    y = 96
+    d.rectangle([x - 2, y - 2, x + pic.width + 2, y + pic.height + 2], outline=(210, 214, 222), width=2)
+    img.paste(pic, (x, y))
+
+    cap_y = y + pic.height + 30
+    for line in caption.split("\n"):
+        d.text((72, cap_y), line, font=font(26), fill=INK)
+        cap_y += 38
+    if footer:
+        d.text((72, H - 46), footer, font=font(20), fill=MUTED)
+    img.save(path, quality=95)
+
+
 async def say(text: str, out: Path) -> float:
     """Synthesise narration, chunked by sentence: the service drops very long inputs and
     gives no audio instead of an error."""
@@ -122,21 +152,32 @@ def scene_demo(seconds: float, out: Path) -> None:
 
 
 SCENES = [
-    ("title",
-     "A purchase is approved on Monday. By Thursday the amount, the supplier and the delivery "
-     "date have all moved. The approval badge is still green, because nobody re-reads an approval "
-     "that already looks finished. This is Approval drift for Confluence.",
-     ("Codegeist 2026", "An approval is a decision about facts",
-      ["It is granted against one exact set of values.",
-       "The page then changes. The badge does not.",
-       "This app notices."],
-      "Confluence macro  ·  Runs on Atlassian  ·  MIT")),
+    ("shot",
+     "This purchase order was approved on Monday: sixteen hundred dollars, one supplier, one "
+     "delivery date. By Thursday the amount had moved to eighteen fifty. The page still said "
+     "approved, because nobody re-reads an approval that already looks finished.",
+     {"src": "shots/gallery-2-stale.png",
+      "kicker": "A real Confluence page, not a mock",
+      "caption": "Approved against A$1,600. The page now says A$1,850.\n"
+                 "Nothing re-checked it. This macro does, on every render.",
+      "footer": "Approval drift  ·  Codegeist 2026"}),
+    ("rovo",
+     "It can also be asked out loud. In Rovo, the agent reads the approval off the page and answers "
+     "with the exact values that were approved, who approved them and when. It is explicitly not "
+     "allowed to decide whether the approval still holds: that verdict stays with the deterministic "
+     "check, so the answer cannot drift on its own.",
+     ("Rovo agent", "It tells you what was approved",
+      ["Amount 1850  ·  AUD  ·  scope design, print",
+       "Supplier northline supply co.  ·  net 30",
+       "Approved by page editor, 08:22 UTC",
+       "Then: compare these values with the page now."],
+      "Verbatim from the Rovo agent on the demo page")),
     ("demo",
-     "Here it is on a real Confluence page. The approval is recorded against these exact values. "
-     "Now watch the amount. It moves from sixteen hundred to eighteen fifty, and the approval "
-     "immediately reports itself stale: amount increase, sixteen hundred to eighteen fifty, "
-     "critical. It names the change and the direction. Approving the new values stores a new "
-     "snapshot, and the page is green again.",
+     "Here it is on the live page. The approval is recorded against these exact values. Now watch "
+     "the amount. It moves from sixteen hundred to eighteen fifty, and the approval immediately "
+     "reports itself stale: amount increase, sixteen hundred to eighteen fifty, critical. It names "
+     "the change and the direction. Approving the new values stores a new snapshot, and the page is "
+     "green again.",
      None),
     ("logic",
      "The verdict is not a model's opinion. It is a pure function: normalise the request into a "
@@ -182,6 +223,11 @@ async def main() -> int:
         clip = BUILD / f"s{i}.mp4"
         if kind == "demo":
             scene_demo(dur, clip)
+        elif kind == "shot":
+            png = BUILD / f"c{i}.png"
+            shot(png, ROOT / card_spec["src"], card_spec["kicker"],
+                 card_spec["caption"], card_spec.get("footer", ""))
+            scene_image(png, clip, dur)
         else:
             png = BUILD / f"c{i}.png"
             card(png, *card_spec)

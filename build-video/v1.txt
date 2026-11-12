@@ -1,3 +1,2 @@
 file 'C:/Users/Chan/Documents/codegeist2026/build-video/v1_0.mp3'
 file 'C:/Users/Chan/Documents/codegeist2026/build-video/v1_1.mp3'
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/v1_2.mp3'
