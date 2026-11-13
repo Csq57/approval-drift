@@ -70,8 +70,8 @@ Free
 ```
 Support: https://github.com/Csq57/approval-drift/issues
 Documentation: https://github.com/Csq57/approval-drift#readme
-Privacy policy: https://github.com/Csq57/approval-drift/blob/main/PRIVACY.md
-End user terms: https://github.com/Csq57/approval-drift/blob/main/TERMS.md
+Privacy policy: https://github.com/Csq57/approval-drift/blob/master/PRIVACY.md
+End user terms: https://github.com/Csq57/approval-drift/blob/master/TERMS.md
 ```
 
 ### 截图（按顺序上传）

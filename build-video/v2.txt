@@ -1,3 +1,0 @@
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/v2_0.mp3'
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/v2_1.mp3'
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/v2_2.mp3'

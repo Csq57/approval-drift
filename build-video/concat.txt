@@ -1,6 +1,0 @@
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/s0.mp4'
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/s1.mp4'
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/s2.mp4'
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/s3.mp4'
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/s4.mp4'
-file 'C:/Users/Chan/Documents/codegeist2026/build-video/s5.mp4'

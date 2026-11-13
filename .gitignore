@@ -7,3 +7,10 @@ SUBMISSION.md
 ORACLE_*.md
 STATE.md
 forge-app-listing/
+build-video/
+demo-raw.mkv
+demo-silent.mp4
+*.mkv
+t.mp3
+.rec.pid
+frames.txt
